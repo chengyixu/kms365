@@ -17,12 +17,12 @@ var rootCmd = &cobra.Command{
 }
 
 func getClient() *api.Client {
-	token, err := auth.GetToken()
+	httpClient, err := auth.GetHTTPClient()
 	if err != nil {
 		output.Error(err.Error())
 		os.Exit(1)
 	}
-	return api.NewClient(token)
+	return api.NewClient(httpClient)
 }
 
 // --- mail commands ---

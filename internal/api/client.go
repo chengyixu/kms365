@@ -11,14 +11,13 @@ import (
 const baseURL = "https://graph.microsoft.com/v1.0"
 
 type Client struct {
-	token      string
 	httpClient *http.Client
 }
 
-func NewClient(token string) *Client {
+// NewClient creates an API client using the provided http.Client (which handles auth).
+func NewClient(httpClient *http.Client) *Client {
 	return &Client{
-		token:      token,
-		httpClient: &http.Client{},
+		httpClient: httpClient,
 	}
 }
 
@@ -27,7 +26,7 @@ func (c *Client) Get(path string) (json.RawMessage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+c.token)
+	// Authorization header injected by oauth2 transport
 	req.Header.Set("Accept", "application/json")
 
 	resp, err := c.httpClient.Do(req)
@@ -58,7 +57,7 @@ func (c *Client) Post(path string, payload interface{}) (json.RawMessage, error)
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+c.token)
+	// Authorization header injected by oauth2 transport
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)
@@ -84,7 +83,7 @@ func (c *Client) Delete(path string) error {
 	if err != nil {
 		return fmt.Errorf("creating request: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+c.token)
+	// Authorization header injected by oauth2 transport
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
@@ -110,7 +109,7 @@ func (c *Client) Patch(path string, payload interface{}) (json.RawMessage, error
 	if err != nil {
 		return nil, fmt.Errorf("creating request: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+c.token)
+	// Authorization header injected by oauth2 transport
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := c.httpClient.Do(req)
